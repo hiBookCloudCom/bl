@@ -16,4 +16,8 @@ public class BooksDTO {
     private String bookName;
     private String author;
     private String genre;
+    private Integer userId;
+    private String googleVolumeId;
+    private Integer rating;
+    private String status;
 }

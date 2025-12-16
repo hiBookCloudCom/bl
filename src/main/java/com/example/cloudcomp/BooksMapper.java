@@ -14,6 +14,10 @@ public class BooksMapper {
                 .bookName(b.getBookName())
                 .author(b.getAuthor())
                 .genre(b.getGenre())
+                .googleVolumeId(b.getGoogleVolumeId())
+                .userId(b.getUserId())
+                .rating(b.getRating())
+                .status(b.getStatus())
                 .build();
     }
 
@@ -25,6 +29,10 @@ public class BooksMapper {
                 .bookName(dto.getBookName())
                 .author(dto.getAuthor())
                 .genre(dto.getGenre())
+                .googleVolumeId(dto.getGoogleVolumeId())
+                .userId(dto.getUserId())
+                .rating(dto.getRating())
+                .status(dto.getStatus())
                 .build();
     }
 }

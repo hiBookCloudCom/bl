@@ -42,23 +42,38 @@ public class BooksController {
 
     @GetMapping
     public ResponseEntity<List<BooksDTO>> getBooks(
+            @RequestParam Integer userId,
             @RequestParam(required = false) String author,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) String bookName,
+            @RequestParam(required = false) Integer rating,
             @RequestParam(required = false, name = "q") String query
     ) {
         if (author != null && !author.isBlank()) {
-            return ResponseEntity.ok(booksService.getBooksByAuthor(author));
+            return ResponseEntity.ok(booksService.getBooksByAuthor(author, userId));
         }
         if (genre != null && !genre.isBlank()) {
-            return ResponseEntity.ok(booksService.getBooksByGenre(genre));
+            return ResponseEntity.ok(booksService.getBooksByGenre(genre, userId));
         }
         if (bookName != null && !bookName.isBlank()) {
-            return ResponseEntity.ok(booksService.getBooksByBookName(bookName));
+            return ResponseEntity.ok(booksService.getBooksByBookName(bookName, userId));
+        }
+        if (rating != null) {
+            return ResponseEntity.ok(booksService.getBooksByRating(rating, userId));
         }
         if (query != null && !query.isBlank()) {
             return ResponseEntity.ok(booksService.searchByBookNameSubstring(query));
         }
-        return ResponseEntity.ok(booksService.getAllBooks());
+        return ResponseEntity.ok(booksService.getAllBooks(userId));
     }
+
+
+    @PostMapping("/addFromGoogle")
+    public BooksDTO addFromGoogle(@RequestParam Integer userId,
+                                  @RequestParam String q,
+                                  @RequestParam(required = false) String status,
+                                  @RequestParam(required = false) Integer rating) {
+        return booksService.addBookFromGoogle(userId, q, status, rating);
+    }
+
 }

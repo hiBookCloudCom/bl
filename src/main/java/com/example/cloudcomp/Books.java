@@ -33,6 +33,19 @@ public class Books {
     @Column(name="genre")
     private String genre;
 
+
+    @Column(name="user_id", nullable = false)
+    private Integer userId;
+
+    @Column(name="google_volume_id")
+    private String googleVolumeId;
+
+    @Column(name="rating")
+    private Integer rating;
+
+    @Column(name="status")
+    private String status;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
