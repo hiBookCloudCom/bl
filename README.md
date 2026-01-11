@@ -41,3 +41,4 @@ The application is composed of multiple independent microservices that communica
 
 ## Build Instructions
 
+Details about running and building the app are written in `DOCUMENTATION.md`.
