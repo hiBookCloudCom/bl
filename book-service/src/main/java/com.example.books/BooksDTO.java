@@ -1,4 +1,4 @@
-package com.example.cloudcomp;
+package com.example.books;
 
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;

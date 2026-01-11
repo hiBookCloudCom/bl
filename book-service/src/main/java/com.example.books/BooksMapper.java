@@ -1,4 +1,4 @@
-package com.example.cloudcomp;
+package com.example.books;
 
 
 import org.springframework.stereotype.Component;

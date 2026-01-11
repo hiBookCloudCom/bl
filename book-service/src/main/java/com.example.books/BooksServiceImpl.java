@@ -1,4 +1,4 @@
-package com.example.cloudcomp;
+package com.example.books;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
