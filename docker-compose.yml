@@ -1,4 +1,11 @@
 services:
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
   db:
     image: postgres:16-alpine
     environment:
@@ -37,7 +44,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: sofijasofija
       SERVER_PORT: 8084
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/hibook
-      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,mappings
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,mappings,metrics,prometheus
 
 
 
@@ -52,14 +59,14 @@ services:
       - keycloak
 
     ports:
-      - "8080:8080"
+      - "8083:8083"
     environment:
        SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/cc_project
        SPRING_DATASOURCE_USERNAME: sofijadjukic
        SPRING_DATASOURCE_PASSWORD: sofijasofija
-       SERVER_PORT: 8080
+       SERVER_PORT: 8083
        SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/hibook
-       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,mappings
+       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,mappings,metrics,prometheus
        SERVER_ERROR_INCLUDE_MESSAGE: always
        SERVER_ERROR_INCLUDE_EXCEPTION: "true"
        SERVER_ERROR_INCLUDE_STACKTRACE: always
