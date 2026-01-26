@@ -22,20 +22,21 @@ public class UserController {
                 .body(created);
     }
 
+
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Integer userId, @RequestBody UserDTO dto) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("userId")  Integer userId, @RequestBody UserDTO dto) {
         dto.setUserId(userId);
         return ResponseEntity.ok(userService.update(dto));
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer userId) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("userId")  Integer userId) {
         userService.delete(userId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Integer userId) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable("userId")  Integer userId) {
         return ResponseEntity.ok(userService.get(userId));
     }
 }
