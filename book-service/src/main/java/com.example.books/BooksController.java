@@ -23,30 +23,30 @@ public class BooksController {
     }
 
     @PutMapping("/{bookId}")
-    public ResponseEntity<BooksDTO> updateBook(@PathVariable Integer bookId, @RequestBody BooksDTO dto) {
+    public ResponseEntity<BooksDTO> updateBook(@PathVariable("bookId") Integer bookId, @RequestBody BooksDTO dto) {
         dto.setBookId(bookId);
         return ResponseEntity.ok(booksService.updateBook(dto));
     }
 
     @DeleteMapping("/{bookId}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Integer bookId) {
+    public ResponseEntity<Void> deleteBook(@PathVariable("bookId") Integer bookId) {
         booksService.deleteBook(bookId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<BooksDTO> getBook(@PathVariable Integer bookId) {
+    public ResponseEntity<BooksDTO> getBook(@PathVariable("bookId") Integer bookId) {
         return ResponseEntity.ok(booksService.getBook(bookId));
     }
 
 
     @GetMapping
     public ResponseEntity<List<BooksDTO>> getBooks(
-            @RequestParam Integer userId,
-            @RequestParam(required = false) String author,
-            @RequestParam(required = false) String genre,
-            @RequestParam(required = false) String bookName,
-            @RequestParam(required = false) Integer rating,
+            @RequestParam(name = "userId") Integer userId,
+            @RequestParam(name = "author",required = false) String author,
+            @RequestParam(name = "genre",required = false) String genre,
+            @RequestParam(name = "bookName",required = false) String bookName,
+            @RequestParam(name = "rating", required = false) Integer rating,
             @RequestParam(required = false, name = "q") String query
     ) {
         if (author != null && !author.isBlank()) {
@@ -69,10 +69,10 @@ public class BooksController {
 
 
     @PostMapping("/addFromGoogle")
-    public BooksDTO addFromGoogle(@RequestParam Integer userId,
-                                  @RequestParam String q,
-                                  @RequestParam(required = false) String status,
-                                  @RequestParam(required = false) Integer rating) {
+    public BooksDTO addFromGoogle(@RequestParam(name = "userId") Integer userId,
+                                  @RequestParam(name = "q") String q,
+                                  @RequestParam(name = "status", required = false) String status,
+                                  @RequestParam(name = "rating", required = false) Integer rating) {
         return booksService.addBookFromGoogle(userId, q, status, rating);
     }
 
