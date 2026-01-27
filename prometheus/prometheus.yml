@@ -12,3 +12,9 @@ scrape_configs:
     static_configs:
       - targets: ["user:8083"]
 
+  - job_name: "reading"
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ "user:8085" ]
+
+
