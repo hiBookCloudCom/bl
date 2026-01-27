@@ -1,6 +1,5 @@
 package com.example.books;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +15,6 @@ public class BooksDTO {
     private String bookName;
     private String author;
     private String genre;
-    private Integer userId;
     private String googleVolumeId;
-    private Integer rating;
-    private String status;
+
 }

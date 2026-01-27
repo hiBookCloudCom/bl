@@ -10,17 +10,15 @@ import java.util.List;
 @Repository
 public interface BooksDAO extends JpaRepository<Books, Integer> {
 
-    List<Books> findAllByAuthorAndUserId(String author, Integer userId);
-    List<Books> findAllByGenreAndUserId(String genre, Integer userId);
-    List<Books> findAllByBookNameAndUserId(String bookName, Integer userId);
+    List<Books> findAllByAuthor(String author);
+    List<Books> findAllByGenre(String genre);
 
-    List<Books> findAllByUserId(Integer userId);
-    List<Books> findAllByRatingAndUserId(Integer rating, Integer userId);
+
     boolean existsByBookNameAndAuthor(String bookName, String author);
-    @Query("select b from Books b where b.bookName like %:q%")
+    @Query("select b from Books b where lower(b.bookName) like lower(concat('%', :q, '%'))")
     List<Books> searchSubs(@Param("q") String q);
 
-    boolean existsByGoogleVolumeIdAndUserId(String googleVolumeId, Integer userId);
+    boolean existsByGoogleVolumeId(String googleVolumeId);
 
 
 }

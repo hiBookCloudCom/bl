@@ -10,16 +10,13 @@ public interface BooksService {
 
     BooksDTO getBook(Integer bookId);
 
-    List<BooksDTO> getAllBooks(Integer userId);
+    List<BooksDTO> getAllBooks();
 
-    List<BooksDTO> getBooksByAuthor(String author, Integer userID);
-    List<BooksDTO> getBooksByGenre(String genre, Integer userID);
-    List<BooksDTO> getBooksByBookName(String bookName, Integer userID);
-
-    List<BooksDTO> getBooksByRating(Integer rating, Integer userId);
+    List<BooksDTO> getBooksByAuthor(String author);
+    List<BooksDTO> getBooksByGenre(String genre);
     List<BooksDTO> searchByBookNameSubstring(String q);
 
-    BooksDTO addBookFromGoogle(Integer userId, String q, String status, Integer rating);
+    BooksDTO addBookFromGoogle(String q);
 
 
 }
