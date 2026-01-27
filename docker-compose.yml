@@ -22,6 +22,34 @@ services:
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
       - grafana_data:/var/lib/grafana
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.13.4
+    ports:
+      - "12201:12201/udp"
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    depends_on:
+      - elasticsearch
 
   db:
     image: postgres:16-alpine
@@ -53,6 +81,7 @@ services:
     depends_on:
       - db
       - keycloak
+      - logstash
     ports:
       - "8084:8084"
     environment:
@@ -62,6 +91,11 @@ services:
       SERVER_PORT: 8084
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/hibook
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,mappings,metrics,prometheus
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://${GELF_HOST:-host.docker.internal}:12201"
+        tag: "book-service"
 
 
 
@@ -74,6 +108,7 @@ services:
     depends_on:
       - db
       - keycloak
+      - logstash
 
     ports:
       - "8083:8083"
@@ -89,6 +124,12 @@ services:
        SERVER_ERROR_INCLUDE_STACKTRACE: always
        LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: DEBUG
        LOGGING_LEVEL_ORG_HIBERNATE_SQL: DEBUG
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://${GELF_HOST:-host.docker.internal}:12201"
+        tag: "user-service"
+
 
 
 
@@ -96,4 +137,5 @@ volumes:
   bookdb:
   keycloak_data:
   grafana_data:
+  esdata:
 
