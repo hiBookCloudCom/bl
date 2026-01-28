@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reading
+  namespace: hibook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reading
+  template:
+    metadata:
+      labels:
+        app: reading
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.36
+          command: ["sh","-c","until nc -z db 5432; do echo waiting for db; sleep 2; done;"]
+        - name: wait-for-keycloak
+          image: busybox:1.36
+          command: ["sh","-c","until nc -z keycloak 8080; do echo waiting for keycloak; sleep 2; done;"]
+      containers:
+        - name: reading
+          image: reading-service:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8085
+          env:
+            - name: SERVER_PORT
+              value: "8085"
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://db:5432/cc_project
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: POSTGRES_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: POSTGRES_PASSWORD
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+              value: http://keycloak:8080/realms/hibook
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: health,mappings,metrics,prometheus
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8085
+            initialDelaySeconds: 25
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8085
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reading
+  namespace: hibook
+spec:
+  selector:
+    app: reading
+  ports:
+    - port: 8085
+      targetPort: 8085
+  type: ClusterIP
