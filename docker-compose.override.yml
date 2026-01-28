@@ -1,0 +1,12 @@
+services:
+  app:
+    logging:
+      driver: json-file
+
+  reading:
+    logging:
+      driver: json-file
+
+  user:
+    logging:
+      driver: json-file
