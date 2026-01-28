@@ -11,7 +11,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class GoogleBooksController {
 
-    private final RestClient rest = RestClient.create("https://www.googleapis.com/books/v1");
+    private final GoogleBooksClient googleBooksClient;
 
     @GetMapping("/search")
     public List<BooksDTO> search(
@@ -19,18 +19,7 @@ public class GoogleBooksController {
             @RequestParam(defaultValue = "10") int maxResults,
             @RequestParam(defaultValue = "0") int startIndex
     ) {
-        final int max = Math.min(maxResults, 5);
-        final int start = Math.max(startIndex, 0);
-
-        Map resp = rest.get()
-                .uri(uri -> uri.path("/volumes")
-                        .queryParam("q", q)
-                        .queryParam("printType", "books")
-                        .queryParam("startIndex", start)
-                        .queryParam("maxResults", max)
-                        .build())
-                .retrieve()
-                .body(Map.class);
+        Map resp = googleBooksClient.search(q, maxResults, startIndex);
 
         List<Map> items = (List<Map>) resp.get("items");
         if (items == null) return List.of();
@@ -45,10 +34,10 @@ public class GoogleBooksController {
             List<String> categories = (List<String>) vi.get("categories");
 
             out.add(BooksDTO.builder()
-                    .bookId(null) // nema baze
                     .bookName(title)
                     .author(authors == null ? null : String.join(", ", authors))
                     .genre(categories == null || categories.isEmpty() ? null : categories.get(0))
+                    .googleVolumeId((String) item.get("id"))
                     .build());
         }
         return out;

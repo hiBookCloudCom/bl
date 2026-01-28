@@ -91,6 +91,7 @@ services:
       SERVER_PORT: 8084
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/hibook
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,mappings,metrics,prometheus
+      GOOGLE_BOOKS_API_KEY: ${GOOGLE_BOOKS_API_KEY}
     logging:
       driver: gelf
       options:
@@ -150,7 +151,7 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "tcp://127.0.0.1:12201"
+        gelf-address: //"tcp://127.0.0.1:12201"
 
         tag: "user-service"
 
